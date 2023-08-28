@@ -30,22 +30,6 @@ const SearchBar = ({ onSearch }) => {
         Search
       </Button>
     </Box>
-
-    // <Grid container spacing={2} alignItems="center">
-    //   <Grid item>
-    //     <TextField
-    //       label="Symbol"
-    //       variant="outlined"
-    //       value={searchTerm}
-    //       onChange={(e) => setSearchTerm(e.target.value)}
-    //     />
-    //   </Grid>
-    //   <Grid item>
-    //     <Button variant="contained" onClick={handleSearch}>
-    //       Search
-    //     </Button>
-    //   </Grid>
-    // </Grid>
   );
 };
 

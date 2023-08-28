@@ -10,7 +10,7 @@ const StockPriceCard = ({ stockData }) => {
   const volume = latestTimestamp
     ? stockData["Time Series (5min)"][latestTimestamp]["5. volume"]
     : "N/A";
-    const highest = latestTimestamp
+  const highest = latestTimestamp
     ? stockData["Time Series (5min)"][latestTimestamp]["2. high"]
     : "N/A";
 
@@ -42,20 +42,18 @@ const StockPriceCard = ({ stockData }) => {
               Highest
             </Typography>
             <Typography
-                  variant="h6"
-                  component="div"
-                  color="textSecondary"
-                  sx={{ textTransform: "capitalize" }}
-                >
-                  ${highest}
-                </Typography>
-
-          </Grid>
-          <Grid item xs={6} md={4}>
-
-          <Button variant="contained">Add To WatchList</Button>
+              variant="h6"
+              component="div"
+              color="textSecondary"
+              sx={{ textTransform: "capitalize" }}
+            >
+              ${highest}
+            </Typography>
           </Grid>
         </Grid>
+          {/* <Grid container justifyContent='flex-end' mb={5}>
+            <Button variant="contained">Add List</Button>
+          </Grid> */}
       </CardContent>
     </Card>
   );
