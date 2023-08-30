@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { Line } from "react-chartjs-2"; //1
-import { Chart } from "chart.js";
+// import { Line } from "react-chartjs-2"; //1
+// import moment from 'moment';
+import 'chartjs-adapter-moment';
+import  Chart  from "chart.js/auto";
 import { fetchStockData } from "../utils/Api";
 import StockPriceCard from "../components/StockPriceCard";
 import SearchBar from "../components/SearchBar";
@@ -21,6 +23,11 @@ import {
   Typography,
 } from "@mui/material";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
+import  ChartDataLabels  from 'chartjs-plugin-datalabels';
+import { Tooltip, LinearScale, TimeScale } from 'chart.js';
+
+
+Chart.register(ChartDataLabels, Tooltip, LinearScale, TimeScale);
 
 const getChartData = (data) => {
   if (!data || !data["Time Series (5min)"]) {
@@ -32,12 +39,16 @@ const getChartData = (data) => {
     console.error("No timestamps found in the data.");
     return {};
   }
-  
+
   const prices = timestamps.map(
     (timestamp) => data["Time Series (5min)"][timestamp]["1. open"]
   );
+
   console.log("Timestamps:", timestamps);
   console.log("Prices:", prices);
+
+
+
   return {
     labels: timestamps,
     datasets: [
@@ -51,16 +62,23 @@ const getChartData = (data) => {
     ],
   };
 };
-const chartOptions = {                //4
+
+// =====================Chart-Option==============================
+const chartOptions = {
   scales: {
     x: {
-      type: "time",
+      type: "time",     //for x-axis
       time: {
-        unit: "minute",
+        unit: "minute",   //For time unit
       },
     },
     y: {
       beginAtZero: false,
+    },
+  },
+  plugins: {
+    datalabels: {
+      display: false,    //Stock-Price Removed
     },
   },
 };
@@ -69,9 +87,10 @@ const StockPrice = () => {
   const [stockData, setStockData] = useState(null);
   const [searchedSymbol, setSearchedSymbol] = useState("");
   const [watchlist, setWatchlist] = useState([]);
+  const [showChartIndex, setShowChartIndex] = useState(null);
+  const [chartInstance, setChartInstance] = useState(null);
+  const chartRefs = useRef([]);
 
-  const [showChartIndex, setShowChartIndex] = useState(null); //2
-  const [chartInstance, setChartInstance] = useState(null)
 
   useEffect(() => {
     if (searchedSymbol !== "") {
@@ -87,18 +106,43 @@ const StockPrice = () => {
   }, [searchedSymbol]);
 
   useEffect(() => {
-    if (showChartIndex !== null) {
+    console.log("Show Chart Index:", showChartIndex);
+    console.log("Watchlist:", watchlist);
+    console.log("Chart Instance:", chartInstance);
+
+    if (showChartIndex !== null ) {
       if (chartInstance) {
         chartInstance.destroy();
       }
-      const newChartInstance = new Chart(document.getElementById(`chart-${showChartIndex}`), {
-        type: "line",
-        data: getChartData(watchlist[showChartIndex]),
-        options: chartOptions,
-      });
+      console.log("Creating chart for index:", showChartIndex)
+      const newChartInstance = new Chart(
+        chartRefs.current[showChartIndex],
+        {
+          type: "line",
+          data: getChartData(watchlist[showChartIndex]),
+          options: chartOptions,
+        }
+      );
+      console.log("New Chart Instance:", newChartInstance)
       setChartInstance(newChartInstance);
     }
-  }, [showChartIndex])
+  }, [showChartIndex]);
+
+  // useEffect(() => {
+  //   if (showChartIndex !== null && chartInstance && watchlist.length > showChartIndex) {
+  //     chartInstance.destroy();
+  //     const newChartInstance = new Chart(
+  //       chartRefs.current[showChartIndex],
+  //       {
+  //         type: "line",
+  //         data: getChartData(watchlist[showChartIndex]),
+  //         options: chartOptions,
+  //       }
+  //     );
+  //     setChartInstance(newChartInstance);
+  //   }
+  // }, [showChartIndex, chartInstance, watchlist]);
+  
 
   const handleSearch = (symbol) => {
     setSearchedSymbol(symbol);
@@ -109,6 +153,8 @@ const StockPrice = () => {
       setWatchlist([...watchlist, stockData]);
     }
   };
+
+
   return (
     <Container>
       <AppBar position="static">
@@ -175,19 +221,16 @@ const StockPrice = () => {
                   <TableCell>
                     {data["Time Series (5min)"][latestTimestamp]["5. volume"]}
                   </TableCell>
-                  <TableCell>                                   
-                    {showChartIndex === index ? (     //3
-                      // <Line
-                      //   data={getChartData(data)}
-                      //   options={chartOptions}
-                      //   width={100}
-                      //   height={50}
-                      // />
-                      <canvas id={`chart-${index}`} width={100} height={50} />
+                  <TableCell>
+                    {showChartIndex === index ? ( 
+                      <canvas ref={el => chartRefs.current[index] = el} width={400} height={200} />
                     ) : (
                       <Button
                         variant="contained"
-                        onClick={() => setShowChartIndex(index)}
+                        onClick={() => {
+                          console.log("Button Clicked")
+                          setShowChartIndex(index)
+                        }}
                       >
                         Show Chart
                       </Button>
