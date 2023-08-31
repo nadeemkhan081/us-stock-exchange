@@ -15,8 +15,8 @@ const StockPriceCard = ({ stockData }) => {
     : "N/A";
 
   return (
-    <Card sx={{ marginTop: "50px", backgroundColor: '#eae7e7' }}>
-      <CardContent>
+    <Card sx={{ marginTop: "50px", backgroundColor: "#eae7e7" }}>
+      <CardContent align="center">
         <Typography variant="h4" align="center">
           {companySymbol}
         </Typography>
@@ -54,7 +54,7 @@ const StockPriceCard = ({ stockData }) => {
             <Typography variant="h6" component='div' color='textSecondary'>Add To Watchlist</Typography>
           </Grid> */}
         </Grid>
-          {/* <Grid container justifyContent='flex-end' mb={5}>
+        {/* <Grid container justifyContent='flex-end' mb={5}>
             <Button variant="contained">Add List</Button>
           </Grid> */}
       </CardContent>

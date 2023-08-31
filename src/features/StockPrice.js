@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 // import { Line } from "react-chartjs-2"; //1
 // import moment from 'moment';
-import 'chartjs-adapter-moment';
-import  Chart  from "chart.js/auto";
+import "chartjs-adapter-moment";
+import Chart from "chart.js/auto";
 import { fetchStockData } from "../utils/Api";
 import StockPriceCard from "../components/StockPriceCard";
 import SearchBar from "../components/SearchBar";
@@ -23,9 +23,8 @@ import {
   Typography,
 } from "@mui/material";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
-import  ChartDataLabels  from 'chartjs-plugin-datalabels';
-import { Tooltip, LinearScale, TimeScale } from 'chart.js';
-
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { Tooltip, LinearScale, TimeScale } from "chart.js";
 
 Chart.register(ChartDataLabels, Tooltip, LinearScale, TimeScale);
 
@@ -47,8 +46,6 @@ const getChartData = (data) => {
   console.log("Timestamps:", timestamps);
   console.log("Prices:", prices);
 
-
-
   return {
     labels: timestamps,
     datasets: [
@@ -67,9 +64,9 @@ const getChartData = (data) => {
 const chartOptions = {
   scales: {
     x: {
-      type: "time",     //for x-axis
+      type: "time", //for x-axis
       time: {
-        unit: "minute",   //For time unit
+        unit: "minute", //For time unit
       },
     },
     y: {
@@ -78,19 +75,24 @@ const chartOptions = {
   },
   plugins: {
     datalabels: {
-      display: false,    //Stock-Price Removed
+      display: false, //Stock-Price Removed
     },
   },
 };
 
 const StockPrice = () => {
+
+
+
+
   const [stockData, setStockData] = useState(null);
   const [searchedSymbol, setSearchedSymbol] = useState("");
+  
+ 
   const [watchlist, setWatchlist] = useState([]);
   const [showChartIndex, setShowChartIndex] = useState(null);
   const [chartInstance, setChartInstance] = useState(null);
   const chartRefs = useRef([]);
-
 
   useEffect(() => {
     if (searchedSymbol !== "") {
@@ -110,20 +112,17 @@ const StockPrice = () => {
     console.log("Watchlist:", watchlist);
     console.log("Chart Instance:", chartInstance);
 
-    if (showChartIndex !== null ) {
+    if (showChartIndex !== null) {
       if (chartInstance) {
         chartInstance.destroy();
       }
-      console.log("Creating chart for index:", showChartIndex)
-      const newChartInstance = new Chart(
-        chartRefs.current[showChartIndex],
-        {
-          type: "line",
-          data: getChartData(watchlist[showChartIndex]),
-          options: chartOptions,
-        }
-      );
-      console.log("New Chart Instance:", newChartInstance)
+      console.log("Creating chart for index:", showChartIndex);
+      const newChartInstance = new Chart(chartRefs.current[showChartIndex], {
+        type: "line",
+        data: getChartData(watchlist[showChartIndex]),
+        options: chartOptions,
+      });
+      console.log("New Chart Instance:", newChartInstance);
       setChartInstance(newChartInstance);
     }
   }, [showChartIndex]);
@@ -142,7 +141,6 @@ const StockPrice = () => {
   //     setChartInstance(newChartInstance);
   //   }
   // }, [showChartIndex, chartInstance, watchlist]);
-  
 
   const handleSearch = (symbol) => {
     setSearchedSymbol(symbol);
@@ -153,7 +151,6 @@ const StockPrice = () => {
       setWatchlist([...watchlist, stockData]);
     }
   };
-
 
   return (
     <Container>
@@ -222,14 +219,18 @@ const StockPrice = () => {
                     {data["Time Series (5min)"][latestTimestamp]["5. volume"]}
                   </TableCell>
                   <TableCell>
-                    {showChartIndex === index ? ( 
-                      <canvas ref={el => chartRefs.current[index] = el} width={400} height={200} />
+                    {showChartIndex === index ? (
+                      <canvas
+                        ref={(el) => (chartRefs.current[index] = el)}
+                        width={400}
+                        height={200}
+                      />
                     ) : (
                       <Button
                         variant="contained"
                         onClick={() => {
-                          console.log("Button Clicked")
-                          setShowChartIndex(index)
+                          console.log("Button Clicked");
+                          setShowChartIndex(index);
                         }}
                       >
                         Show Chart
