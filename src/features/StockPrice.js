@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-// import { Line } from "react-chartjs-2"; //1
-// import moment from 'moment';
 import "chartjs-adapter-moment";
 import Chart from "chart.js/auto";
 import { fetchStockData } from "../utils/Api";
@@ -43,8 +41,8 @@ const getChartData = (data) => {
     (timestamp) => data["Time Series (5min)"][timestamp]["1. open"]
   );
 
-  console.log("Timestamps:", timestamps);
-  console.log("Prices:", prices);
+  // console.log("Timestamps:", timestamps);
+  // console.log("Prices:", prices);
 
   return {
     labels: timestamps,
@@ -181,7 +179,7 @@ const StockPrice = () => {
         </p>
       )}
 
-      <TableContainer component={Paper} sx={{ marginTop: "20px" }}>
+      <TableContainer component={Paper} sx={{ marginTop: "20px", maxHeight: 600, overflow: 'auto' }}>
         <Table>
           <TableHead sx={{ backgroundColor: "#eae7e7" }}>
             <TableRow sx={{ fontWeight: 5000 }}>
